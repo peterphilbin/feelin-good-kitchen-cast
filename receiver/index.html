@@ -406,8 +406,10 @@ function renderSection(sectionId) {
   $("secTitle").textContent = s.title;
   $("secBlurb").textContent = s.blurb || "";
   $("secNote").textContent = s.note || "";
-  $("secCount").textContent = `${rs.length} recipe${rs.length === 1 ? "" : "s"} inside`;
-  $("secCards").innerHTML = rs.map((r) => `<div class="card" data-id="${r.id}"><div class="top t-${s.theme}"><span class="main">${r.art[0]}</span><span class="mins">${r.minutes} min</span></div><div class="name">${esc(r.title)}</div></div>`).join("");
+  $("secCount").textContent = rs.length > 5
+    ? `${rs.length} recipes inside · here are a few, flick ▶ to see them all`
+    : `${rs.length} recipe${rs.length === 1 ? "" : "s"} inside`;
+  $("secCards").innerHTML = rs.slice(0, 5).map((r) => `<div class="card" data-id="${r.id}"><div class="top t-${s.theme}"><span class="main">${r.art[0]}</span><span class="mins">${r.minutes} min</span></div><div class="name">${esc(r.title)}</div></div>`).join("");
   show("section");
 }
 
@@ -418,7 +420,7 @@ function renderRecipe(v) {
   $("recipeEmoji").textContent = (r.art || ["🍽"])[0];
   $("recipeTitle").textContent = r.title || "";
   $("recipeChips").innerHTML = `<span class="chip">⏱ ${r.minutes} min</span><span class="chip">🍽 ${v.servings} serving${v.servings > 1 ? "s" : ""}</span>`;
-  $("recipeSwap").innerHTML = `<b>${esc(v.swapLabel || "The healthy-ish swap")}</b>${esc(r.swap || "")}`;
+  $("recipeSwap").innerHTML = `<b>${esc(v.swapLabel || "The healthy-ish swap")}</b>${esc(v.swap || r.swap || "")}`;
   $("ingredients").innerHTML = (v.ingredients || []).map((i) => `<li>${i.amount ? `<span class="amt">${esc(i.amount)}</span> ` : ""}${esc(i.item)}</li>`).join("");
   $("method").innerHTML = (v.steps || []).map((s) => `<li>${esc(s)}</li>`).join("");
   const n = v.nutrition;
@@ -529,8 +531,14 @@ function handle(msg) {
     pending = msg;
     return;
   }
+  if (msg.type === "recipes") {
+    // The recipe list arrives a section at a time (Cast messages max out at 64 KB).
+    catalog.recipes = catalog.recipes.filter((r) => r.sectionId !== msg.sectionId).concat(msg.recipes);
+    builtRows = false;
+    return;
+  }
   if (msg.type === "catalog") {
-    catalog = msg;
+    catalog = { sections: msg.sections, recipes: msg.recipes || [] };
     reportScreen(); setTimeout(reportScreen, 5000);
     builtRows = false;
     $("splashStatus").textContent = "Connected! Pick a recipe on your phone.";
