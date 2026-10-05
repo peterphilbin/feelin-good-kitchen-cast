@@ -483,6 +483,24 @@ function renderDone(v) {
   }
 }
 
+// Tell the phone how this TV sees the page (logged on the phone, for fixing screen-fit problems).
+function reportScreen() {
+  if (!window.castContext) return;
+  const r = $("stage").getBoundingClientRect();
+  const cs = (el) => { const s = getComputedStyle(el); return { zoom: s.zoom, transform: s.transform, width: s.width, height: s.height, fontSize: s.fontSize }; };
+  castContext.sendCustomMessage(NS, undefined, { type: "debug", screen: {
+    inner: [innerWidth, innerHeight], outer: [outerWidth, outerHeight], client: [document.documentElement.clientWidth, document.documentElement.clientHeight],
+    visual: window.visualViewport ? [visualViewport.width, visualViewport.height, visualViewport.scale, visualViewport.offsetLeft, visualViewport.offsetTop] : null,
+    dpr: devicePixelRatio, screen: [screen.width, screen.height, screen.availWidth, screen.availHeight],
+    stageRect: [r.left, r.top, r.width, r.height], stageStyle: $("stage").style.cssText,
+    html: cs(document.documentElement), body: cs(document.body),
+    metas: [...document.querySelectorAll("meta")].map((m) => m.outerHTML),
+    bodyChildren: [...document.body.children].map((e) => e.tagName + (e.id ? "#" + e.id : "")),
+    styleSheets: [...document.styleSheets].map((s) => s.href || "inline"),
+    ua: navigator.userAgent,
+  } });
+}
+
 // Keep the broccoli splash up for a few seconds when the TV first starts.
 const splashUntil = Date.now() + 4000;
 let pending = null;
@@ -495,6 +513,7 @@ function handle(msg) {
   }
   if (msg.type === "catalog") {
     catalog = msg;
+    reportScreen(); setTimeout(reportScreen, 5000);
     builtRows = false;
     $("splashStatus").textContent = "Connected! Pick a recipe on your phone.";
     return;
