@@ -83,6 +83,22 @@
   .hint { position: absolute; left: 0; right: 0; bottom: 0; height: 80px; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 28px; font-weight: 700; color: var(--muted); background: linear-gradient(transparent, var(--butter) 40%); }
   .hint b { color: var(--crust); }
 
+  #screenInfo { position: absolute; right: 24px; bottom: 16px; font-size: 18px; font-weight: 600; color: var(--muted); opacity: .5; }
+
+  /* ── Section ── */
+  #section .hero { position: absolute; left: 0; top: 0; right: 0; height: 600px; display: flex; align-items: center; padding: 0 100px; gap: 80px; }
+  #section .hero .plate { width: 380px; height: 380px; flex: none; }
+  #section .hero .main { font-size: 200px; }
+  #section .hero .meta { flex: 1; }
+  #section .section-label { font-size: 28px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; opacity: .8; }
+  #section h2 { font-size: 110px; line-height: 1; margin: 14px 0 22px; }
+  #section .hero p { font-size: 44px; font-weight: 700; line-height: 1.3; max-width: 1200px; }
+  #section .note { margin-top: 26px; max-width: 1200px; background: rgba(255,255,255,.6); border-radius: 22px; padding: 18px 26px; font-size: 25px; font-weight: 600; line-height: 1.4; }
+  #section .note:empty { display: none; }
+  #section .sec-list { position: absolute; left: 100px; right: 100px; top: 640px; }
+  #section .sec-list h3 { font-family: "Outfit"; font-weight: 800; font-size: 34px; margin-bottom: 18px; }
+  #section .cards { display: flex; gap: 28px; }
+
   /* ── Recipe ── */
   #recipe { display: flex; }
   #recipe .left { width: 640px; flex: none; padding: 70px 60px; display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -186,6 +202,25 @@
       </div>
       <div class="status"><span class="pulse"></span><span id="splashStatus">Waiting for your phone…</span></div>
     </div>
+    <div id="screenInfo"></div>
+  </section>
+
+  <!-- Section: what a category is about, and what's in it -->
+  <section id="section" class="screen dots">
+    <div class="hero t-SUNRISE" id="secHero">
+      <div class="plate"><span class="main" id="secEmoji"></span></div>
+      <div class="meta">
+        <div class="section-label" id="secNumber"></div>
+        <h2 class="display" id="secTitle"></h2>
+        <p id="secBlurb"></p>
+        <div class="note" id="secNote"></div>
+      </div>
+    </div>
+    <div class="sec-list">
+      <h3 id="secCount"></h3>
+      <div class="cards" id="secCards"></div>
+    </div>
+    <div class="hint"><span>Pick a recipe on your phone, or flick with <b>◀ ▶</b> to browse them here</span></div>
   </section>
 
   <!-- Browse -->
@@ -252,14 +287,30 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 // ── Fit the 1920x1080 stage to whatever the TV gives us ──
+// Chromecasts often report a 1280x720 (or 960x540) window, and can report a stale size at
+// start-up without a resize event, so measure several ways, take the smallest, and keep checking.
+let fitted = "";
+function viewport() {
+  const ws = [innerWidth, document.documentElement.clientWidth, window.visualViewport && visualViewport.width].filter((v) => v > 0);
+  const hs = [innerHeight, document.documentElement.clientHeight, window.visualViewport && visualViewport.height].filter((v) => v > 0);
+  return { w: Math.min(...ws), h: Math.min(...hs) };
+}
 function fit() {
-  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const { w, h } = viewport();
+  if (!w || !h || fitted === w + "x" + h) return;
+  fitted = w + "x" + h;
+  const s = Math.min(w / 1920, h / 1080);
   const stage = $("stage");
   stage.style.transform = `scale(${s})`;
-  stage.style.left = (innerWidth - 1920 * s) / 2 + "px";
-  stage.style.top = (innerHeight - 1080 * s) / 2 + "px";
+  stage.style.left = (w - 1920 * s) / 2 + "px";
+  stage.style.top = (h - 1080 * s) / 2 + "px";
+  $("screenInfo").textContent = `${w}×${h} · ${devicePixelRatio}x`;
 }
-addEventListener("resize", fit); fit();
+addEventListener("resize", fit);
+addEventListener("load", fit);
+if (window.visualViewport) visualViewport.addEventListener("resize", fit);
+setInterval(fit, 1000);
+fit();
 
 // ── Broccoli florets (same layout as tools/make_cast_splash.py) ──
 (function drawFlorets() {
@@ -329,6 +380,22 @@ function renderBrowse(focusId) {
     row.querySelector(".cards").style.transform = `translateX(${-shift}px)`;
   }
   show("browse");
+}
+
+// Section: the category's title, what it's about, and its recipes.
+function renderSection(sectionId) {
+  const s = catalog.sections.find((x) => x.id === sectionId);
+  if (!s) return;
+  const rs = catalog.recipes.filter((r) => r.sectionId === s.id);
+  setTheme($("secHero"), s.theme);
+  $("secEmoji").textContent = s.emoji;
+  $("secNumber").textContent = `Section ${s.number}`;
+  $("secTitle").textContent = s.title;
+  $("secBlurb").textContent = s.blurb || "";
+  $("secNote").textContent = s.note || "";
+  $("secCount").textContent = `${rs.length} recipe${rs.length === 1 ? "" : "s"} inside`;
+  $("secCards").innerHTML = rs.map((r) => `<div class="card" data-id="${r.id}"><div class="top t-${s.theme}"><span class="main">${r.art[0]}</span><span class="mins">${r.minutes} min</span></div><div class="name">${esc(r.title)}</div></div>`).join("");
+  show("section");
 }
 
 function renderRecipe(v) {
@@ -437,6 +504,7 @@ function handle(msg) {
   switch (msg.screen) {
     case "splash": show("splash"); break;
     case "browse": renderBrowse(msg.focusId); break;
+    case "section": renderSection(msg.sectionId); break;
     case "recipe": renderRecipe(msg); break;
     case "cook": renderCook(msg); break;
   }

@@ -1,11 +1,12 @@
 // Preview mode: open receiver/?demo in a browser. Keys: 1 splash · 2 browse (←/→ to move) · 3 recipe
-// · 4 cook intro · 5 gather · 6 step with timers · 7 done. The real data comes from the phone app.
+// · 4 cook intro · 5 gather · 6 step with timers · 7 done
+// · 8 section (Rise & Shine) · 9 section with a note (Little Foodies). The real data comes from the phone app.
 const demoSections = [
-  { id: "rise", number: "01", title: "Rise & Shine", emoji: "🍳", theme: "SUNRISE" },
+  { id: "rise", number: "01", title: "Rise & Shine", emoji: "🍳", theme: "SUNRISE", blurb: "Big breakfast energy, none of the drive-thru crash." },
   { id: "midday", number: "02", title: "Midday Fuel", emoji: "🌯", theme: "GARDEN" },
   { id: "evening", number: "03", title: "Evening Wins", emoji: "🍔", theme: "SUNSET" },
   { id: "super", number: "04", title: "Super Fresh", emoji: "🥦", theme: "FRESH" },
-  { id: "kids", number: "05", title: "Little Foodies", emoji: "🍕", theme: "PLAYFUL" },
+  { id: "kids", number: "05", title: "Little Foodies", emoji: "🍕", theme: "PLAYFUL", blurb: "Balanced meals a fussy 4-year-old will actually eat.", note: "Made for fussy eaters around 4–5. Familiar shapes, mild flavours, and veg hidden in plain sight. Let them help: kids who cook are far more likely to taste. Quarter cherry tomatoes and grapes, and keep salt to a minimum." },
 ];
 const r = (id, sectionId, title, art, minutes, servings, description) =>
   ({ id, sectionId, title, art, minutes, servings, steps: 4, description, swap: "Whole-wheat tortilla, beans and spinach mean big fibre and protein — no greasy hash brown required." });
@@ -48,6 +49,8 @@ const views = {
     timers: [{ label: "Peppers & onion", remaining: 157, total: 240, finished: false, stepIndex: 0 }, { label: "Beans & spinach", remaining: 0, total: 60, finished: true, stepIndex: 1 }],
     offer: { label: "Scramble", seconds: 120 },
   }),
+  8: () => handle({ type: "view", screen: "section", sectionId: "rise" }),
+  9: () => handle({ type: "view", screen: "section", sectionId: "kids" }),
   7: () => cook({ finished: true, outro: "Burritos are wrapped. Breakfast champion status: unlocked." }),
 };
 addEventListener("keydown", (e) => {
