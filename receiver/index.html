@@ -102,13 +102,25 @@
   /* ── Recipe ── */
   #recipe { display: flex; }
   #recipe .left { width: 640px; flex: none; padding: 70px 60px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  #recipe .left .plate { width: 300px; height: 300px; margin-bottom: 34px; }
-  #recipe .left .main { font-size: 150px; }
+  #recipe .left .plate { width: 230px; height: 230px; margin-bottom: 24px; }
+  #recipe .left .main { font-size: 115px; }
   #recipe .left h2 { font-size: 60px; line-height: 1.05; }
   #recipe .left .chips { margin: 24px 0; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
   #recipe .left .chip { border-color: var(--crust); background: rgba(255,255,255,.55); font-size: 22px; }
   #recipe .swap { background: rgba(255,255,255,.75); border-radius: 22px; padding: 20px 24px; text-align: left; font-size: 22px; font-weight: 600; line-height: 1.4; }
   #recipe .swap b { display: block; font-size: 18px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; color: #34520A; }
+  #recipe .nutri { margin-top: 18px; width: 100%; text-align: left; }
+  #recipe .nutri .for { font-size: 17px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; opacity: .75; margin-bottom: 8px; }
+  #recipe .nutri .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  #recipe .nutri .tile { background: rgba(255,255,255,.75); border-radius: 16px; padding: 10px 10px 8px; position: relative; }
+  #recipe .nutri .tile.big { grid-column: span 2; }
+  #recipe .nutri .amt { font-family: "Outfit"; font-weight: 800; font-size: 26px; line-height: 1; }
+  #recipe .nutri .tile.big .amt { font-size: 38px; }
+  #recipe .nutri .amt small { font-size: 16px; font-weight: 700; }
+  #recipe .nutri .lbl { font-size: 15px; font-weight: 700; margin-top: 4px; }
+  #recipe .nutri .pct { font-size: 15px; font-weight: 800; color: var(--ketchup); }
+  #recipe .nutri .dot { position: absolute; right: 10px; top: 10px; width: 12px; height: 12px; border-radius: 50%; }
+  .l-GREEN { background: #7CB518; } .l-AMBER { background: #FFB703; } .l-RED { background: #E63946; }
   #recipe .right { flex: 1; padding: 64px 80px 100px 70px; display: flex; flex-direction: column; gap: 34px; }
   #recipe h3 { font-family: "Outfit"; font-weight: 800; font-size: 44px; margin-bottom: 14px; }
   #ingredients { columns: 2; column-gap: 50px; list-style: none; }
@@ -245,6 +257,7 @@
       <h2 class="display" id="recipeTitle"></h2>
       <div class="chips" id="recipeChips"></div>
       <div class="swap" id="recipeSwap"></div>
+      <div class="nutri" id="recipeNutri"></div>
     </div>
     <div class="right dots">
       <div><h3>Ingredients</h3><ul id="ingredients"></ul></div>
@@ -408,6 +421,11 @@ function renderRecipe(v) {
   $("recipeSwap").innerHTML = `<b>${esc(v.swapLabel || "The healthy-ish swap")}</b>${esc(r.swap || "")}`;
   $("ingredients").innerHTML = (v.ingredients || []).map((i) => `<li>${i.amount ? `<span class="amt">${esc(i.amount)}</span> ` : ""}${esc(i.item)}</li>`).join("");
   $("method").innerHTML = (v.steps || []).map((s) => `<li>${esc(s)}</li>`).join("");
+  const n = v.nutrition;
+  $("recipeNutri").innerHTML = n ? `<div class="for">Per serving · % of ${esc(n.for)}'s day</div><div class="tiles">` +
+    n.rows.map((x, i) => `<div class="tile${i === 0 ? " big" : ""}">${x.light ? `<span class="dot l-${x.light}"></span>` : ""}` +
+      `<div class="amt">${esc(x.amount)}<small> ${esc(x.unit)}</small></div><div class="lbl">${esc(x.label)}${x.pct != null ? ` · <span class="pct">${x.pct}%</span>` : ""}</div></div>`).join("") +
+    `</div>` : "";
   show("recipe");
 }
 

@@ -40,7 +40,11 @@ const cook = (extra) => handle(Object.assign({ type: "view", screen: "cook", rec
 const views = {
   1: () => handle({ type: "view", screen: "splash" }),
   2: () => handle({ type: "view", screen: "browse", focusId: demoRecipes[focus].id }),
-  3: () => handle({ type: "view", screen: "recipe", recipeId: "breakfast-burrito", servings: 2, ingredients, steps }),
+  3: () => handle({ type: "view", screen: "recipe", recipeId: "breakfast-burrito", servings: 2, ingredients, steps, nutrition: { for: "a woman", rows: [
+    { label: "Calories", amount: "468", unit: "kcal", pct: 23 }, { label: "Protein", amount: "26", unit: "g", pct: 58 },
+    { label: "Fibre", amount: "9.3", unit: "g", pct: 31 }, { label: "Sugars", amount: "5.8", unit: "g", pct: 6, light: "AMBER" },
+    { label: "Fat", amount: "20", unit: "g", pct: 29, light: "AMBER" }, { label: "Saturates", amount: "8.0", unit: "g", pct: 40, light: "RED" },
+    { label: "Salt", amount: "2.0", unit: "g", pct: 34, light: "RED" }] } }),
   4: () => cook({ page: 0, kind: "intro", narration: { parts: ["Let's make the Loaded Veggie Breakfast Burrito.", "It takes about twenty minutes and makes two big burritos."], current: 1, speaking: true } }),
   5: () => cook({ page: 1, kind: "gather", narration: { parts: ["Let's gather your ingredients.", "2 large whole-wheat tortillas", "4 large eggs", "85 grams canned black beans"], current: 2, speaking: true } }),
   6: () => cook({
