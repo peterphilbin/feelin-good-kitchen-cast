@@ -416,8 +416,16 @@ function renderDone(v) {
   }
 }
 
+// Keep the broccoli splash up for a few seconds when the TV first starts.
+const splashUntil = Date.now() + 4000;
+let pending = null;
 function handle(msg) {
   if (!msg) return;
+  if (msg.type === "view" && Date.now() < splashUntil) {
+    if (!pending) setTimeout(() => { const m = pending; pending = null; handle(m); }, splashUntil - Date.now());
+    pending = msg;
+    return;
+  }
   if (msg.type === "catalog") {
     catalog = msg;
     builtRows = false;
