@@ -243,7 +243,7 @@
   body.cinema #splash { background: #000; }
   body.cinema #splash > :not(.intro) { display: none; }
   body.cinema #splash .intro { display: block; }
-  .intro video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08);
+  .intro .footage { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08);
     animation: introVideo 3s cubic-bezier(.2,.6,.2,1) .2s forwards; }
   .intro .shade { position: absolute; inset: 0;
     background: radial-gradient(ellipse 60% 55% at 50% 46%, rgba(28,19,13,.15), rgba(0,0,0,.75) 100%),
@@ -321,7 +321,9 @@
     <div id="screenInfo"></div>
     <div class="intro">
       <audio id="introSting" src="intro_sting.mp3" preload="auto"></audio>
-      <video id="introVideo" src="splash_kitchen_tv.mp4" muted autoplay loop playsinline preload="auto"></video>
+      <!-- An animated WebP, not <video>: Cast devices draw video on a separate hardware plane that shows black
+           under fades, transforms and the stage scaling; images composite like everything else. -->
+      <img id="introVideo" class="footage" src="splash_kitchen_tv.webp" alt="">
       <div class="shade"></div>
       <div class="glow"></div>
       <div class="lockup">
