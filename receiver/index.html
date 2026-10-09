@@ -274,6 +274,10 @@
   #bug { position: absolute; right: 36px; bottom: 30px; width: 64px; height: 64px; opacity: 0; transition: opacity .8s ease; pointer-events: none; z-index: 50;
     filter: drop-shadow(0 4px 14px rgba(0,0,0,.45)); }
   #bug.on { opacity: .92; }
+  /* A brief "you pressed ◀" chip when a TV remote button arrives. */
+  #keyToast { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); padding: 12px 26px; border-radius: 999px;
+    background: rgba(0,0,0,.72); color: #fff; font-size: 30px; font-weight: 800; opacity: 0; transition: opacity .25s ease; z-index: 60; pointer-events: none; }
+  #keyToast.on { opacity: 1; }
   @keyframes introVideo { to { opacity: 1; transform: scale(1); } }
   @keyframes introFade { to { opacity: 1; } }
   @keyframes introLogo { to { opacity: 1; transform: scale(1); } }
@@ -295,6 +299,8 @@
     <path fill="#FFF8E1" d="M22 59 H70 C70 69 62 74 54 74 H38 C30 74 22 69 22 59 Z"/>
     <rect x="69" y="59" width="20" height="5" rx="2.5" fill="#FFF8E1"/>
   </svg>
+
+  <div id="keyToast"></div>
 
   <!-- Splash -->
   <section id="splash" class="screen on dots">
@@ -817,6 +823,23 @@ function handle(msg) {
     case "cook": renderCook(msg); break;
   }
 }
+
+// The TV's own remote (Google TV): pass each button to the phone, which works out what it means on the
+// current screen, and flash what was pressed so it's clear the TV heard it.
+const KEY_LABELS = { ArrowLeft: "◀", ArrowRight: "▶", ArrowUp: "▲", ArrowDown: "▼", Enter: "OK", MediaPlayPause: "⏯",
+  MediaPlay: "▶ Play", MediaPause: "⏸ Pause", MediaTrackNext: "⏭", MediaTrackPrevious: "⏮", MediaFastForward: "⏩", MediaRewind: "⏪" };
+let keyToastTimer = null;
+document.addEventListener("keydown", (e) => {
+  if (location.search.includes("demo") && /^[0-9c]$/.test(e.key)) return;  // the demo's own shortcuts
+  const label = KEY_LABELS[e.key] || `${e.key || "?"} (${e.keyCode})`;
+  const t = $("keyToast");
+  t.textContent = "Remote: " + label;
+  t.classList.add("on");
+  clearTimeout(keyToastTimer);
+  keyToastTimer = setTimeout(() => t.classList.remove("on"), 1200);
+  if (window.castContext) castContext.sendCustomMessage(NS, undefined, { type: "key", key: e.key, code: e.keyCode });
+  if (e.key.startsWith("Arrow") || e.key === "Enter") e.preventDefault();
+});
 
 // Touch (Nest Hub): tapping a card opens it on the phone too.
 document.addEventListener("click", (e) => {
