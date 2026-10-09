@@ -179,6 +179,58 @@
   #done p { font-size: 40px; font-weight: 600; color: var(--muted-dark); max-width: 1300px; }
   .confetti { position: absolute; top: -80px; font-family: var(--emoji); animation: fall linear forwards; }
   @keyframes fall { to { transform: translateY(1250px) rotate(540deg); } }
+
+  /* ── Cinema mode (Netflix-style): dark, photo-led, rows of photo cards ── */
+  #cinema { background: #0b0b0b; color: #fff; overflow: hidden; }
+  #cinema .bg { position: absolute; right: 0; top: 0; width: 1500px; height: 860px; background-size: cover; background-position: center;
+    opacity: 0; transition: opacity .9s ease; animation: kenburns 24s ease-in-out infinite alternate; }
+  #cinema .bg.on { opacity: 1; }
+  #cinema .bg.none { background: radial-gradient(circle at 60% 45%, rgba(255,183,3,.35), transparent 60%); }
+  @keyframes kenburns { from { transform: scale(1.02); } to { transform: scale(1.12) translate(-20px, -10px); } }
+  #cinema .fade-l { position: absolute; inset: 0; background: linear-gradient(90deg, #0b0b0b 22%, rgba(11,11,11,.85) 38%, rgba(11,11,11,0) 70%); }
+  #cinema .fade-b { position: absolute; inset: 0; background: linear-gradient(0deg, #0b0b0b 26%, rgba(11,11,11,.6) 46%, rgba(11,11,11,0) 70%); }
+  #cinema .brand { position: absolute; left: 80px; top: 44px; font-family: "Outfit"; font-weight: 900; font-size: 40px; letter-spacing: 1px; color: #E63946; text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+  #cinema .brand span { color: #fff; font-weight: 600; font-size: 22px; letter-spacing: 4px; margin-left: 14px; vertical-align: middle; opacity: .8; }
+  #cinema .info { position: absolute; left: 80px; top: 150px; width: 820px; }
+  #cinema .kicker { font-size: 24px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: #FFB703; display: flex; gap: 12px; align-items: center; }
+  #cinema h2 { font-family: "Outfit"; font-weight: 900; font-size: 86px; line-height: .98; letter-spacing: -1px; margin: 16px 0 18px; text-shadow: 0 4px 24px rgba(0,0,0,.6);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  #cinema .meta { display: flex; gap: 22px; align-items: center; font-size: 26px; font-weight: 700; }
+  #cinema .meta .match { color: #46D369; font-weight: 800; }
+  #cinema .meta .badge { border: 2px solid rgba(255,255,255,.6); border-radius: 6px; padding: 2px 10px; font-size: 20px; }
+  #cinema .desc { font-size: 28px; line-height: 1.4; font-weight: 500; margin-top: 18px; color: rgba(255,255,255,.88);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  #cinema .btns { display: flex; gap: 16px; margin-top: 28px; }
+  #cinema .btn { display: inline-flex; align-items: center; gap: 12px; padding: 14px 34px; border-radius: 8px; font-size: 26px; font-weight: 800; }
+  #cinema .btn.play { background: #fff; color: #111; }
+  #cinema .btn.more { background: rgba(109,109,110,.7); color: #fff; }
+  #cineRows { position: absolute; left: 0; right: 0; top: 640px; bottom: 0; overflow: hidden; }
+  .crow .ccards { padding: 4px 0 4px 6px; }
+  #cineRowsInner { transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+  .crow { height: 300px; padding-left: 80px; }
+  .crow h3 { font-family: "Outfit"; font-weight: 800; font-size: 30px; margin-bottom: 22px; color: #e5e5e5; }
+  .crow .ccards { display: flex; gap: 14px; transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+  .ccard { position: relative; width: 384px; height: 216px; flex: none; border-radius: 10px; overflow: hidden; background-size: cover; background-position: center;
+    transition: transform .3s, box-shadow .3s; transform-origin: center center; }
+  .ccard .shade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.85), rgba(0,0,0,0) 55%); }
+  .ccard .emo { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--emoji); font-size: 90px; }
+  .ccard .t { position: absolute; left: 16px; right: 16px; bottom: 12px; font-family: "Outfit"; font-weight: 800; font-size: 24px; line-height: 1.1;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ccard .m { position: absolute; right: 10px; top: 10px; background: rgba(0,0,0,.65); border-radius: 6px; padding: 3px 9px; font-size: 18px; font-weight: 800; }
+  .ccard.focus { transform: scale(1.12); box-shadow: 0 0 0 5px #fff, 0 20px 50px rgba(0,0,0,.8); z-index: 2; }
+
+  /* Recipe page in cinema mode: dark, with the dish's photo behind the left panel. */
+  body.cinema #recipe { background: #0b0b0b; color: #fff; }
+  body.cinema #recipe .left { color: #fff; background-size: cover !important; background-position: center !important; position: relative; }
+  body.cinema #recipe .left > * { position: relative; }
+  body.cinema #recipe .left::before { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(11,11,11,.95), rgba(11,11,11,.55)); }
+  body.cinema #recipe .left .chip { border-color: rgba(255,255,255,.7); background: rgba(0,0,0,.35); color: #fff; }
+  body.cinema #recipe .swap, body.cinema #recipe .nutri .tile { background: rgba(255,255,255,.12); color: #fff; }
+  body.cinema #recipe .swap b { color: #46D369; }
+  body.cinema #recipe .right { background: #141414; }
+  body.cinema #recipe .right.dots { background-image: none; }
+  body.cinema #recipe .hint { background: linear-gradient(transparent, #141414 40%); color: #bbb; }
+  body.cinema #recipe .hint b { color: #fff; }
 </style>
 </head>
 <body>
@@ -256,6 +308,24 @@
   </section>
 
   <!-- Recipe -->
+
+  <!-- Cinema (Netflix-style) browse -->
+  <section id="cinema" class="screen">
+    <div class="bg" id="cineBgA"></div>
+    <div class="bg" id="cineBgB"></div>
+    <div class="fade-l"></div>
+    <div class="fade-b"></div>
+    <div class="brand">FEELIN' GOOD<span>KITCHEN</span></div>
+    <div class="info">
+      <div class="kicker" id="cineKicker"></div>
+      <h2 id="cineTitle"></h2>
+      <div class="meta" id="cineMeta"></div>
+      <div class="desc" id="cineDesc"></div>
+      <div class="btns"><span class="btn play">▶ Cook it</span><span class="btn more">ℹ Details</span></div>
+    </div>
+    <div id="cineRows"><div id="cineRowsInner"></div></div>
+  </section>
+
   <section id="recipe" class="screen">
     <div class="left t-SUNRISE" id="recipeLeft">
       <div class="plate"><span class="main" id="recipeEmoji"></span></div>
@@ -422,6 +492,7 @@ function renderRecipe(v) {
   const r = catalog.recipes.find((x) => x.id === v.recipeId) || {};
   const theme = themeOf(r.sectionId);
   setTheme($("recipeLeft"), theme);
+  $("recipeLeft").setAttribute("style", style === "cinema" ? photoStyle(r, 1000) : "");
   $("recipeEmoji").textContent = (r.art || ["🍽"])[0];
   $("recipeTitle").textContent = r.title || "";
   $("recipeChips").innerHTML = `<span class="chip">⏱ ${r.minutes} min</span><span class="chip">🍽 ${v.servings} serving${v.servings > 1 ? "s" : ""}</span>`;
@@ -526,6 +597,78 @@ function reportScreen() {
   } });
 }
 
+
+// ── Cinema mode (Netflix-style), switched on from the phone ──
+let style = "classic";
+let cineBuilt = false;
+let cineBgFront = "A";
+let lastBrowseFocus = null;
+
+function photoStyle(r, width) {
+  return r.photo ? `background-image:url('${r.photo}${r.photo.includes("?") ? "&" : "?"}width=${width}')` : "";
+}
+
+function buildCinema() {
+  let html = "";
+  catalog.sections.forEach((s) => {
+    const rs = catalog.recipes.filter((r) => r.sectionId === s.id);
+    if (!rs.length) return;
+    html += `<div class="crow" data-section="${s.id}"><h3>${esc(s.title)}</h3><div class="ccards">` +
+      rs.map((r) => `<div class="ccard t-${s.theme}" data-id="${r.id}" style="${photoStyle(r, 640)}">` +
+        (r.photo ? "" : `<div class="emo">${r.art[0]}</div>`) +
+        `<div class="shade"></div><div class="m">${r.minutes} min</div><div class="t">${esc(r.title)}</div></div>`).join("") +
+      `</div></div>`;
+  });
+  $("cineRowsInner").innerHTML = html;
+  cineBuilt = true;
+}
+
+let cineSwap = null;
+function setCinemaBackdrop(r) {
+  // Two layers crossfade: the new photo goes on the hidden one, then fades in over the old.
+  const next = cineBgFront === "A" ? "B" : "A";
+  const incoming = $("cineBg" + next), outgoing = $("cineBg" + cineBgFront);
+  cineBgFront = next;
+  clearTimeout(cineSwap);
+  incoming.className = "bg" + (r.photo ? "" : " none");
+  incoming.setAttribute("style", photoStyle(r, 1600));
+  // Give the picture a moment to load before fading it in.
+  cineSwap = setTimeout(() => {
+    incoming.classList.add("on");
+    outgoing.classList.remove("on");
+  }, r.photo ? 250 : 0);
+}
+
+function renderCinema(focusId) {
+  if (!cineBuilt) buildCinema();
+  const r = catalog.recipes.find((x) => x.id === focusId) || catalog.recipes[0];
+  if (!r) return;
+  const s = catalog.sections.find((x) => x.id === r.sectionId) || {};
+  if (lastBrowseFocus !== r.id) setCinemaBackdrop(r);
+  lastBrowseFocus = r.id;
+  $("cineKicker").innerHTML = `<span class="emoji">${s.emoji || ""}</span> ${esc(s.title || "")}`;
+  $("cineTitle").textContent = r.title;
+  $("cineMeta").innerHTML = (r.kcal ? `<span class="match">🔥 ${r.kcal} kcal</span>` : "") +
+    `<span>⏱ ${r.minutes} min</span><span class="badge">${esc(r.meal || "")}</span><span>👣 ${r.steps} steps</span>`;
+  $("cineDesc").textContent = r.description;
+  document.querySelectorAll(".ccard").forEach((c) => c.classList.toggle("focus", c.dataset.id === r.id));
+  const rows = [...document.querySelectorAll(".crow")];
+  const ri = rows.findIndex((row) => row.dataset.section === r.sectionId);
+  $("cineRowsInner").style.transform = `translateY(${-Math.max(0, ri) * 300}px)`;
+  const row = rows[ri];
+  if (row) {
+    const cards = [...row.querySelectorAll(".ccard")];
+    const ci = cards.findIndex((c) => c.dataset.id === r.id);
+    row.querySelector(".ccards").style.transform = `translateX(${-Math.max(0, ci - 2) * 398}px)`;
+  }
+  show("cinema");
+}
+
+function setStyle(next) {
+  style = next === "cinema" ? "cinema" : "classic";
+  document.body.classList.toggle("cinema", style === "cinema");
+}
+
 // Keep the broccoli splash up for a few seconds when the TV first starts.
 const splashUntil = Date.now() + 4000;
 let pending = null;
@@ -540,6 +683,11 @@ function handle(msg) {
     // The recipe list arrives a section at a time (Cast messages max out at 64 KB).
     catalog.recipes = catalog.recipes.filter((r) => r.sectionId !== msg.sectionId).concat(msg.recipes);
     builtRows = false;
+    cineBuilt = false;
+    return;
+  }
+  if (msg.type === "style") {
+    setStyle(msg.style);
     return;
   }
   if (msg.type === "catalog") {
@@ -553,8 +701,13 @@ function handle(msg) {
   if (msg.screen !== "done") confettiFor = null;
   switch (msg.screen) {
     case "splash": show("splash"); break;
-    case "browse": renderBrowse(msg.focusId); break;
-    case "section": renderSection(msg.sectionId); break;
+    case "browse": style === "cinema" ? renderCinema(msg.focusId) : renderBrowse(msg.focusId); break;
+    case "section":
+      if (style === "cinema") {
+        const first = catalog.recipes.find((r) => r.sectionId === msg.sectionId);
+        renderCinema(lastBrowseFocus && (catalog.recipes.find((r) => r.id === lastBrowseFocus) || {}).sectionId === msg.sectionId ? lastBrowseFocus : first && first.id);
+      } else renderSection(msg.sectionId);
+      break;
     case "recipe": renderRecipe(msg); break;
     case "cook": renderCook(msg); break;
   }
@@ -562,7 +715,7 @@ function handle(msg) {
 
 // Touch (Nest Hub): tapping a card opens it on the phone too.
 document.addEventListener("click", (e) => {
-  const card = e.target.closest(".card");
+  const card = e.target.closest(".card, .ccard");
   if (card && window.castContext) castContext.sendCustomMessage(NS, undefined, { type: "select", recipeId: card.dataset.id });
 });
 

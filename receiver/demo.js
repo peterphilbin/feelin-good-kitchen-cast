@@ -21,6 +21,12 @@ const demoRecipes = [
   r("green-goddess-salmon", "super", "Green Goddess Salmon Traybake", ["🐟", "🥦", "🍋"], 25, 2, "Lemony roast salmon with charred greens and a herby yogurt sauce."),
   r("mini-pizza-faces", "kids", "Mini Pizza Faces", ["🍕", "🌽", "🫑"], 15, 2, "Little wholemeal pizzas with veg hidden in the sauce."),
 ];
+
+// Photos and calories as the phone sends them, so cinema mode can be previewed.
+const demoPhotos = {"breakfast-burrito": "Bacon_Kale_Breakfast_Burrito_(8429773809).jpg", "protein-pancakes": "Pancake_Breakfast_(Unsplash).jpg", "avocado-egg-toast": "Fresh_Avocado_Toast_with_Egg.jpg", "smash-burger-wrap": "Burger_wrapped_in_paper.jpg", "crunch-grain-bowl": "Smokey_Millet_Super_Grain_Bowl_With_Crispy_Tofu.jpg", "sweet-potato-wedges": "Baked_Sweet_Potato_Fries_With_Rosemary_and_Parmesan_-_8420845814.jpg", "loaded-mac-cheese": "PXL_20221215_231825450_macaroni_and_cheese_and_green_beans_and_mashed_potatoes.jpg", "green-goddess-salmon": "Salmon,_tomato,_mashed_potato,_broccoli,_mushrooms,_and_corn_-_Massachusetts.jpg", "mini-pizza-faces": "Mini_Pizza.jpg"};
+demoRecipes.forEach((r, i) => { if (demoPhotos[r.id]) r.photo = "https://commons.wikimedia.org/wiki/Special:FilePath/" + demoPhotos[r.id]; r.kcal = 450 + (i * 37) % 250; r.meal = "Dinner"; });
+addEventListener("keydown", (e) => { if (e.key === "c") { setStyle(style === "cinema" ? "classic" : "cinema"); views[2](); } });
+if (new URLSearchParams(location.search).get("style") === "cinema") setStyle("cinema");
 handle({ type: "catalog", sections: demoSections, recipes: demoRecipes });
 
 const ingredients = [
