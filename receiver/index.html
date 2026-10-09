@@ -246,9 +246,9 @@
   .intro .glow { position: absolute; left: 660px; top: 40px; width: 600px; height: 600px; border-radius: 50%;
     background: radial-gradient(circle, rgba(230,57,70,.35), rgba(230,57,70,0) 65%); opacity: 0; animation: introFade 2.4s ease-out .9s forwards; }
   .intro .lockup { position: absolute; left: 0; right: 0; top: 150px; display: flex; flex-direction: column; align-items: center; color: #FFF8E1; }
-  .intro .badge { width: 250px; height: 250px; border-radius: 50%; background: #E63946; overflow: hidden;
-    box-shadow: 0 0 0 6px rgba(255,248,225,.08), 0 30px 90px rgba(230,57,70,.45);
-    opacity: 0; transform: scale(.86); filter: blur(18px); animation: introFocus 1.5s cubic-bezier(.2,.7,.2,1) .8s forwards; }
+  .intro .badge { width: 250px; height: 250px; border-radius: 50%;
+    filter: drop-shadow(0 24px 60px rgba(230,57,70,.4));
+    opacity: 0; transform: scale(1.08); animation: introLogo 2s cubic-bezier(.25,.6,.2,1) .6s forwards; }
   .intro .badge svg { width: 100%; height: 100%; }
   .intro .word { margin-top: 46px; font-family: "Outfit", sans-serif; font-weight: 900; font-size: 150px; line-height: 1; white-space: nowrap;
     color: transparent; -webkit-background-clip: text; background-clip: text;
@@ -266,7 +266,7 @@
   .intro .credit { position: absolute; left: 0; right: 0; bottom: 30px; text-align: center; font-size: 16px; font-weight: 500; color: rgba(255,255,255,.38); }
   @keyframes introVideo { to { opacity: 1; transform: scale(1); } }
   @keyframes introFade { to { opacity: 1; } }
-  @keyframes introFocus { to { opacity: 1; transform: scale(1); filter: blur(0); } }
+  @keyframes introLogo { to { opacity: 1; transform: scale(1); } }
   @keyframes introWord { to { opacity: 1; letter-spacing: .02em; padding-left: .02em; filter: blur(0); } }
   @keyframes introSheen { to { background-position: 0 0; } }
   @keyframes introUp { to { opacity: 1; transform: none; } }
@@ -319,13 +319,13 @@
       <div class="glow"></div>
       <div class="lockup">
         <div class="badge">
-          <svg viewBox="20 20 68 68" aria-label="Feelin' Good burger">
-            <path fill="#FFB703" d="M30,52 C30,36 41,30 54,30 C67,30 78,36 78,52 Z"/>
-            <path fill="#FFF8E1" d="M45,38 l4,-1.5 l0.6,2 l-4,1.5 Z"/><path fill="#FFF8E1" d="M56,35 l4,1 l-0.5,2 l-4,-1 Z"/><path fill="#FFF8E1" d="M64,42 l3.5,-2 l1,1.8 l-3.5,2 Z"/>
-            <path fill="#7CB518" d="M28,52 L80,52 L80,56 Q76,60 72,56 Q68,60 64,56 Q60,60 56,56 Q52,60 48,56 Q44,60 40,56 Q36,60 32,56 Q30,58 28,56 Z"/>
-            <path fill="#FFF8E1" d="M31,57 L77,57 L77,60 L66,60 L62,66 L58,60 L31,60 Z"/>
-            <path fill="#2B1D14" d="M30,60 L78,60 Q80,60 80,63 L80,66 Q80,69 77,69 L31,69 Q28,69 28,66 L28,63 Q28,60 30,60 Z"/>
-            <path fill="#FFB703" d="M30,70 L78,70 L78,73 Q78,78 72,78 L36,78 Q30,78 30,73 Z"/>
+          <svg viewBox="0 0 100 100" aria-label="Feelin' Good Kitchen">
+            <circle cx="50" cy="50" r="48" fill="#1C130D" stroke="#E63946" stroke-width="3"/>
+            <path fill="#FFB703" d="M36 57 C29 49 35 41 39 34 C40 42 46 45 44 57 Z"/>
+            <path fill="#E63946" d="M46 57 C40 44 48 32 51 21 C55 33 62 40 57 57 Z"/>
+            <path fill="#FFB703" d="M59 57 C56 49 61 44 63 37 C68 45 68 52 64 57 Z"/>
+            <path fill="#FFF8E1" d="M22 59 H70 C70 69 62 74 54 74 H38 C30 74 22 69 22 59 Z"/>
+            <rect x="69" y="59" width="20" height="5" rx="2.5" fill="#FFF8E1"/>
           </svg>
         </div>
         <div class="word">FEELIN’ GOOD</div>
