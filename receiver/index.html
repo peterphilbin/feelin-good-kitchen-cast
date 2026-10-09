@@ -270,6 +270,10 @@
     font-size: 28px; font-weight: 700; color: rgba(255,248,225,.7); opacity: 0; animation: introFade 1.2s ease-out 4.2s forwards; }
   .intro .credit { position: absolute; left: 0; right: 0; bottom: 30px; text-align: center; font-size: 16px; font-weight: 500; color: rgba(255,255,255,.38); }
   .intro:not(.play) * { animation-play-state: paused !important; }
+  /* Small brand badge in the corner of every screen except the splash (which has the big one). */
+  #bug { position: absolute; right: 36px; bottom: 30px; width: 64px; height: 64px; opacity: 0; transition: opacity .8s ease; pointer-events: none; z-index: 50;
+    filter: drop-shadow(0 4px 14px rgba(0,0,0,.45)); }
+  #bug.on { opacity: .92; }
   @keyframes introVideo { to { opacity: 1; transform: scale(1); } }
   @keyframes introFade { to { opacity: 1; } }
   @keyframes introLogo { to { opacity: 1; transform: scale(1); } }
@@ -282,6 +286,15 @@
 </head>
 <body>
 <div id="stage">
+
+  <svg id="bug" viewBox="0 0 100 100" aria-label="Feelin' Good Kitchen">
+    <circle cx="50" cy="50" r="48" fill="#1C130D" stroke="#E63946" stroke-width="4"/>
+    <path fill="#FFB703" d="M36 57 C29 49 35 41 39 34 C40 42 46 45 44 57 Z"/>
+    <path fill="#E63946" d="M46 57 C40 44 48 32 51 21 C55 33 62 40 57 57 Z"/>
+    <path fill="#FFB703" d="M59 57 C56 49 61 44 63 37 C68 45 68 52 64 57 Z"/>
+    <path fill="#FFF8E1" d="M22 59 H70 C70 69 62 74 54 74 H38 C30 74 22 69 22 59 Z"/>
+    <rect x="69" y="59" width="20" height="5" rx="2.5" fill="#FFF8E1"/>
+  </svg>
 
   <!-- Splash -->
   <section id="splash" class="screen on dots">
@@ -498,6 +511,7 @@ function show(id) {
     setTimeout(() => { next.classList.remove("reveal"); $("splash").classList.remove("leaving"); }, 3200);
   }
   document.querySelectorAll(".screen").forEach((el) => el.classList.toggle("on", el.id === id));
+  $("bug").classList.toggle("on", id !== "splash");
   current = id;
 }
 
