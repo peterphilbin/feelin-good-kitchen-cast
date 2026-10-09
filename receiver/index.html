@@ -21,6 +21,11 @@
   #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; }
   .screen { position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease; pointer-events: none; }
   .screen.on { opacity: 1; pointer-events: auto; }
+  /* Leaving the splash: it fades to dark, then the first screen fades up slowly and settles into place. */
+  body.cinema { background: #000; }   /* so fades between screens dip to dark, not cream */
+  #splash.leaving { transition: opacity 1s cubic-bezier(.4,0,.2,1); }
+  .screen.reveal { transform: scale(1.03); transition: opacity 1.6s cubic-bezier(.25,.6,.2,1) .7s, transform 2.2s cubic-bezier(.2,.7,.2,1) .7s; }
+  .screen.reveal.on { transform: none; }
   .display { font-family: "Outfit", sans-serif; font-weight: 900; letter-spacing: -1px; }
   .emoji { font-family: var(--emoji); line-height: 1; }
   .dots { background-image: radial-gradient(rgba(247,234,200,1) 5px, transparent 6px); background-size: 56px 56px; }
@@ -483,6 +488,13 @@ let current = "splash";
 
 function show(id) {
   if (current === id) return;
+  if (current === "splash") {
+    const next = $(id);
+    $("splash").classList.add("leaving");
+    next.classList.add("reveal");
+    void next.offsetWidth;   // apply the starting scale before it turns on
+    setTimeout(() => { next.classList.remove("reveal"); $("splash").classList.remove("leaving"); }, 3200);
+  }
   document.querySelectorAll(".screen").forEach((el) => el.classList.toggle("on", el.id === id));
   current = id;
 }
