@@ -264,6 +264,7 @@
   .intro .istatus { position: absolute; left: 0; right: 0; bottom: 92px; display: flex; justify-content: center; align-items: center; gap: 14px;
     font-size: 28px; font-weight: 700; color: rgba(255,248,225,.7); opacity: 0; animation: introFade 1.2s ease-out 4.2s forwards; }
   .intro .credit { position: absolute; left: 0; right: 0; bottom: 30px; text-align: center; font-size: 16px; font-weight: 500; color: rgba(255,255,255,.38); }
+  .intro:not(.play) * { animation-play-state: paused !important; }
   @keyframes introVideo { to { opacity: 1; transform: scale(1); } }
   @keyframes introFade { to { opacity: 1; } }
   @keyframes introLogo { to { opacity: 1; transform: scale(1); } }
@@ -314,6 +315,7 @@
     </div>
     <div id="screenInfo"></div>
     <div class="intro">
+      <audio id="introSting" src="intro_sting.mp3" preload="auto"></audio>
       <video id="introVideo" src="splash_kitchen_tv.mp4" muted autoplay loop playsinline preload="auto"></video>
       <div class="shade"></div>
       <div class="glow"></div>
@@ -733,8 +735,18 @@ function setStyle(next) {
   document.body.classList.toggle("cinema", style === "cinema");
 }
 
-// Keep the splash up when the TV first starts, long enough for the logo reveal to finish.
-const splashUntil = Date.now() + 6500;
+// The logo reveal waits for the phone's first message (which says whether the intro sound is on), so the
+// sting and the animation start together; without a phone it starts silently after a moment.
+let splashUntil = Date.now() + 9000;
+let introStarted = false;
+function startIntro(sound) {
+  if (introStarted) return;
+  introStarted = true;
+  splashUntil = Date.now() + 6500;   // keep the splash up long enough for the reveal to finish
+  document.querySelector(".intro").classList.add("play");
+  if (sound) { const a = $("introSting"); a.volume = 0.85; a.play().catch(() => {}); }
+}
+setTimeout(() => startIntro(false), 2500);
 let pending = null;
 function handle(msg) {
   if (!msg) return;
@@ -752,6 +764,7 @@ function handle(msg) {
   }
   if (msg.type === "style") {
     setStyle(msg.style);
+    startIntro(msg.sound !== false);
     return;
   }
   if (msg.type === "catalog") {
